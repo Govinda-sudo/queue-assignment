@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drive-Thru Queue Management System</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <header class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shadow-sm">
+        <div class="flex items-center space-x-3">
+            <div class="bg-teal-600 text-white p-2.5 rounded-xl font-bold text-xl shadow-md">
+                <i class="fa-solid fa-car-side"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-wide text-slate-900">Drive-Thru Express</h1>
+                <p class="text-xs text-slate-500">Order Processing & Line Management Simulation</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3">
+            <button onclick="toggleInfoModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 border border-slate-200">
+                <i class="fa-solid fa-circle-info text-teal-600"></i>
+                <span>How It Works</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Layout -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Left Column: Controls & Analytics -->
+        <div class="space-y-6">
+            <!-- Add Order Card -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                <h2 class="text-lg font-semibold mb-4 flex items-center space-x-2 text-teal-700">
+                    <i class="fa-solid fa-plus-circle"></i>
+                    <span>New Drive-Thru Order</span>
+                </h2>
+                <form id="orderForm" onsubmit="addOrder(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Customer Name / Car ID</label>
+                        <input type="text" id="customerName" required placeholder="e.g., Kofi Mensah (Car #4)" 
+                            class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-teal-500 transition text-slate-800">
+                    </div>
+
+                    <!-- Quick Menu Grid with Inline Quantity Selectors -->
+                    <div class="space-y-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Quick Menu Tap Items</label>
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <!-- Cheeseburger Item Card -->
+                            <div class="bg-white border border-slate-200 p-2 rounded-xl shadow-xs flex flex-col justify-between">
+                                <button type="button" onclick="toggleQtyPanel('Cheeseburger')" class="text-left w-full flex items-center justify-between text-xs font-semibold text-slate-700 py-1">
+                                    <span>🍔 Cheeseburger</span>
+                                    <i class="fa-solid fa-chevron-down text-[10px] text-teal-600"></i>
+                                </button>
+                                <div id="panel-Cheeseburger" class="hidden mt-2 pt-2 border-t border-slate-100 flex items-center space-x-1">
+                                    <select id="select-Cheeseburger" class="bg-slate-50 border border-slate-300 rounded px-1.5 py-1 text-[11px] text-slate-700 flex-1 focus:outline-none focus:border-teal-500">
+                                        <option value="1">1 pc</option><option value="2">2 pcs</option><option value="3">3 pcs</option><option value="4">4 pcs</option><option value="5">5 pcs</option><option value="6">6 pcs</option><option value="7">7 pcs</option><option value="8">8 pcs</option><option value="9">9 pcs</option><option value="10">10 pcs</option><option value="12">12 pcs</option><option value="15">15 pcs</option><option value="20">20 pcs</option>
+                                    </select>
+                                    <button type="button" onclick="confirmItemQty('Cheeseburger')" class="bg-teal-600 hover:bg-teal-500 text-white text-[11px] px-2 py-1 rounded font-medium shadow-xs">
+                                        OK
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Large Fries Item Card -->
+                            <div class="bg-white border border-slate-200 p-2 rounded-xl shadow-xs flex flex-col justify-between">
+                                <button type="button" onclick="toggleQtyPanel('Large Fries')" class="text-left w-full flex items-center justify-between text-xs font-semibold text-slate-700 py-1">
+                                    <span>🍟 Large Fries</span>
+                                    <i class="fa-solid fa-chevron-down text-[10px] text-teal-600"></i>
+                                </button>
+                                <div id="panel-Large Fries" class="hidden mt-2 pt-2 border-t border-slate-100 flex items-center space-x-1">
+                                    <select id="select-Large Fries" class="bg-slate-50 border border-slate-300 rounded px-1.5 py-1 text-[11px] text-slate-700 flex-1 focus:outline-none focus:border-teal-500">
+                                        <option value="1">1 pc</option><option value="2">2 pcs</option><option value="3">3 pcs</option><option value="4">4 pcs</option><option value="5">5 pcs</option><option value="6">6 pcs</option><option value="7">7 pcs</option><option value="8">8 pcs</option><option value="9">9 pcs</option><option value="10">10 pcs</option><option value="12">12 pcs</option><option value="15">15 pcs</option><option value="20">20 pcs</option>
+                                    </select>
+                                    <button type="button" onclick="confirmItemQty('Large Fries')" class="bg-teal-600 hover:bg-teal-500 text-white text-[11px] px-2 py-1 rounded font-medium shadow-xs">
+                                        OK
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Cold Soda Item Card -->
+                            <div class="bg-white border border-slate-200 p-2 rounded-xl shadow-xs flex flex-col justify-between">
+                                <button type="button" onclick="toggleQtyPanel('Cold Soda')" class="text-left w-full flex items-center justify-between text-xs font-semibold text-slate-700 py-1">
+                                    <span>🥤 Cold Soda</span>
+                                    <i class="fa-solid fa-chevron-down text-[10px] text-teal-600"></i>
+                                </button>
+                                <div id="panel-Cold Soda" class="hidden mt-2 pt-2 border-t border-slate-100 flex items-center space-x-1">
+                                    <select id="select-Cold Soda" class="bg-slate-50 border border-slate-300 rounded px-1.5 py-1 text-[11px] text-slate-700 flex-1 focus:outline-none focus:border-teal-500">
+                                        <option value="1">1 pc</option><option value="2">2 pcs</option><option value="3">3 pcs</option><option value="4">4 pcs</option><option value="5">5 pcs</option><option value="6">6 pcs</option><option value="7">7 pcs</option><option value="8">8 pcs</option><option value="9">9 pcs</option><option value="10">10 pcs</option><option value="12">12 pcs</option><option value="15">15 pcs</option><option value="20">20 pcs</option>
+                                    </select>
+                                    <button type="button" onclick="confirmItemQty('Cold Soda')" class="bg-teal-600 hover:bg-teal-500 text-white text-[11px] px-2 py-1 rounded font-medium shadow-xs">
+                                        OK
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Chicken Wings Item Card -->
+                            <div class="bg-white border border-slate-200 p-2 rounded-xl shadow-xs flex flex-col justify-between">
+                                <button type="button" onclick="toggleQtyPanel('Chicken Wings')" class="text-left w-full flex items-center justify-between text-xs font-semibold text-slate-700 py-1">
+                                    <span>🍗 Chicken Wings</span>
+                                    <i class="fa-solid fa-chevron-down text-[10px] text-teal-600"></i>
+                                </button>
+                                <div id="panel-Chicken Wings" class="hidden mt-2 pt-2 border-t border-slate-100 flex items-center space-x-1">
+                                    <select id="select-Chicken Wings" class="bg-slate-50 border border-slate-300 rounded px-1.5 py-1 text-[11px] text-slate-700 flex-1 focus:outline-none focus:border-teal-500">
+                                        <option value="1">1 pc</option><option value="2">2 pcs</option><option value="3">3 pcs</option><option value="4">4 pcs</option><option value="5">5 pcs</option><option value="6">6 pcs</option><option value="7">7 pcs</option><option value="8">8 pcs</option><option value="9">9 pcs</option><option value="10">10 pcs</option><option value="12">12 pcs</option><option value="15">15 pcs</option><option value="20">20 pcs</option>
+                                    </select>
+                                    <button type="button" onclick="confirmItemQty('Chicken Wings')" class="bg-teal-600 hover:bg-teal-500 text-white text-[11px] px-2 py-1 rounded font-medium shadow-xs">
+                                        OK
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Active Cart Items Preview List -->
+                        <div class="mt-3 pt-3 border-t border-slate-200">
+                            <span class="text-[11px] font-semibold text-slate-500 block mb-1">Current Order Summary Builder:</span>
+                            <div id="cartPreviewList" class="space-y-1 max-h-24 overflow-y-auto">
+                                <p class="text-[11px] text-slate-400 italic">Click an item above to choose quantity and add.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Final Synchronized Order Input String -->
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Final Order String (Auto-Generated)</label>
+                        <input type="text" id="orderItems" required readonly placeholder="Will compile automatically from items added above" 
+                            class="w-full bg-slate-100 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-700 cursor-not-allowed">
+                    </div>
+
+                    <button type="submit" class="w-full bg-teal-600 hover:bg-teal-500 text-white font-semibold py-2.5 rounded-xl transition shadow-md flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-arrow-down"></i>
+                        <span>Join Line (Add Order)</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Metrics Card -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm grid grid-cols-2 gap-4 text-center">
+                <div class="bg-amber-50 p-4 rounded-xl border border-amber-200">
+                    <p class="text-xs text-amber-800 font-medium">Waiting in Queue</p>
+                    <p id="statQueueSize" class="text-3xl font-black text-amber-600 mt-1">0</p>
+                </div>
+                <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200">
+                    <p class="text-xs text-emerald-800 font-medium">Total Served</p>
+                    <p id="statTotalServed" class="text-3xl font-black text-emerald-600 mt-1">0</p>
+                </div>
+            </div>
+
+            <!-- Completed Orders Summary History & Receipts -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col">
+                <h2 class="text-sm font-bold text-slate-800 mb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-clock-rotate-left text-teal-600"></i>
+                    <span>Completed Orders Ledger</span>
+                </h2>
+                <div id="historyListContainer" class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2 max-h-[200px] overflow-y-auto text-xs text-slate-600">
+                    <p class="text-center py-6 text-slate-400 italic">No completed orders yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center & Right Column: Queue Visualizer & Window -->
+        <div class="lg:col-span-2 space-y-6 flex flex-col">
+            
+            <!-- Current Service Window -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold flex items-center space-x-2 text-teal-700">
+                        <i class="fa-solid fa-store"></i>
+                        <span>Pickup Window (Active Processing)</span>
+                    </h2>
+                    <span id="windowStatusBadge" class="bg-slate-200 text-slate-700 text-xs px-3 py-1 rounded-full font-medium">Window Idle</span>
+                </div>
+
+                <!-- Active Window Display -->
+                <div id="activeWindowDisplay" class="bg-slate-50 border border-slate-200 rounded-xl p-5 text-center min-h-[110px] flex flex-col items-center justify-center transition-all duration-300">
+                    <p class="text-slate-500 text-sm">No car at the pickup window.</p>
+                </div>
+
+                <!-- Action Controls -->
+                <div class="mt-4 flex flex-col sm:flex-row gap-3">
+                    <button onclick="pullNextCar()" id="serveBtn" disabled class="flex-1 bg-teal-600 hover:bg-teal-500 disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold py-2.5 rounded-xl transition shadow-sm flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-bell-concierge"></i>
+                        <span>1. Call Next Car</span>
+                    </button>
+                    <button onclick="markCarServed()" id="finishBtn" disabled class="flex-1 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-200 disabled:text-slate-400 text-white font-medium py-2.5 rounded-xl transition shadow-sm flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <span>2. Driver Leaves (Mark Served)</span>
+                    </button>
+                    <button onclick="clearQueue()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 px-4 py-2.5 rounded-xl font-medium transition text-sm">
+                        Clear Line
+                    </button>
+                </div>
+            </div>
+
+            <!-- Waiting Line Queue Visualizer -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex-1 flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold flex items-center space-x-2 text-teal-700">
+                        <i class="fa-solid fa-people-line"></i>
+                        <span>Waiting Queue</span>
+                    </h2>
+                </div>
+                <div id="queueListContainer" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3 min-h-[220px] overflow-y-auto">
+                    <div class="text-center py-12 text-slate-400 text-sm">
+                        <i class="fa-solid fa-car text-3xl mb-2 opacity-30 block"></i>
+                        The drive-thru queue is currently empty. Add an order to begin.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Info Modal -->
+    <div id="infoModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white border border-slate-200 rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-teal-700 flex items-center space-x-2">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <span>How to Explain This Queue Project</span>
+                </h3>
+                <button onclick="toggleInfoModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="text-sm text-slate-600 space-y-3">
+                <p><strong>1. The Core Concept (FIFO):</strong> Just like cars arriving at a restaurant drive-thru, the first car to join the line (`enqueue`) is the first car served at the pickup window (`dequeue`).</p>
+                <p><strong>2. Two-Step Window Lifecycle:</strong></p>
+                <ul class="list-disc pl-5 space-y-1 text-slate-500">
+                    <li><strong>Serving Now:</strong> The car reaches the window and food preparation/handover is occurring.</li>
+                    <li><strong>Served (Driver Leaves):</strong> Food is delivered, driver leaves, total count increments, and the order is logged in the transaction history ledger with receipt options.</li>
+                </ul>
+                <p><strong>3. POS & Quantity Selection:</strong> Features inline menu drop-downs to select exact quantities before items are bundled into the final order string.</p>
+            </div>
+            <button onclick="toggleInfoModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium py-2 rounded-xl transition text-sm border border-slate-200">Got it!</button>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div id="receiptModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white border border-slate-200 rounded-2xl max-w-sm w-full p-6 shadow-xl space-y-4 text-slate-800">
+            <div class="text-center border-b border-slate-200 pb-3">
+                <h3 class="font-bold text-lg text-teal-700"><i class="fa-solid fa-receipt mr-1"></i> Drive-Thru Express</h3>
+                <p class="text-[11px] text-slate-500">Official Customer Receipt</p>
+            </div>
+            <div id="receiptContent" class="text-xs space-y-2 text-slate-600">
+                <!-- Dynamic Receipt Details Filled via JS -->
+            </div>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="window.print()" class="flex-1 bg-teal-600 hover:bg-teal-500 text-white font-medium py-2 rounded-xl transition text-xs shadow-sm">
+                    <i class="fa-solid fa-print mr-1"></i> Print Receipt
+                </button>
+                <button onclick="toggleReceiptModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2 rounded-xl transition text-xs border border-slate-200">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        let queue = [];
+        let completedHistory = [];
+        let totalServedCount = 0;
+        
+        let orderCart = {}; // e.g., { "Cheeseburger": 2, "Large Fries": 1 }
+
+        let activeOrder = null;
+        let activeStatus = null; 
+
+        // Toggle the inline quantity drawer for a menu item
+        function toggleQtyPanel(itemName) {
+            const panel = document.getElementById(`panel-${itemName}`);
+            // Hide all other panels first
+            ['Cheeseburger', 'Large Fries', 'Cold Soda', 'Chicken Wings'].forEach(item => {
+                if (item !== itemName) {
+                    document.getElementById(`panel-${item}`).classList.add('hidden');
+                }
+            });
+            // Toggle current panel
+            panel.classList.toggle('hidden');
+        }
+
+        // Confirm selected quantity from the inline dropdown and add to cart
+        function confirmItemQty(itemName) {
+            const selectElement = document.getElementById(`select-${itemName}`);
+            const qty = parseInt(selectElement.value);
+
+            if (orderCart[itemName]) {
+                orderCart[itemName] += qty;
+            } else {
+                orderCart[itemName] = qty;
+            }
+
+            // Hide panel after adding
+            document.getElementById(`panel-${itemName}`).classList.add('hidden');
+            selectElement.value = "1"; // reset dropdown
+
+            updateCartPreview();
+        }
+
+        // Remove item from builder cart
+        function removeItemFromBuilder(itemName) {
+            delete orderCart[itemName];
+            updateCartPreview();
+        }
+
+        // Update cart preview and synchronize final order string
+        function updateCartPreview() {
+            const previewContainer = document.getElementById('cartPreviewList');
+            const orderItemsInput = document.getElementById('orderItems');
+            
+            const keys = Object.keys(orderCart);
+            if (keys.length === 0) {
+                previewContainer.innerHTML = `<p class="text-[11px] text-slate-400 italic">Click an item above to choose quantity and add.</p>`;
+                orderItemsInput.value = '';
+                return;
+            }
+
+            let previewHtml = '';
+            let stringParts = [];
+
+            keys.forEach(item => {
+                const qty = orderCart[item];
+                stringParts.push(`${qty}x ${item}`);
+                previewHtml += `
+                    <div class="flex justify-between items-center bg-white border border-slate-200 px-2.5 py-1.5 rounded-lg text-xs shadow-xs">
+                        <span class="font-semibold text-slate-700">${qty}x ${item}</span>
+                        <button type="button" onclick="removeItemFromBuilder('${item}')" class="text-rose-500 hover:text-rose-700 font-bold px-1.5 py-0.5 rounded hover:bg-rose-50 transition">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                `;
+            });
+
+            previewContainer.innerHTML = previewHtml;
+            orderItemsInput.value = stringParts.join(', ');
+        }
+
+        function addOrder(event) {
+            event.preventDefault();
+            const nameInput = document.getElementById('customerName');
+            const itemsInput = document.getElementById('orderItems');
+
+            if (Object.keys(orderCart).length === 0) {
+                alert('Please select at least one menu item and quantity.');
+                return;
+            }
+
+            const newOrder = {
+                id: 'ORD-' + Math.floor(100 + Math.random() * 900),
+                customer: nameInput.value,
+                items: itemsInput.value,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+            };
+
+            queue.push(newOrder);
+            
+            // Reset form and cart
+            nameInput.value = '';
+            orderCart = {};
+            updateCartPreview();
+
+            updateUI();
+        }
+
+        function pullNextCar() {
+            if (queue.length === 0) return;
+            activeOrder = queue.shift(); // FIFO removal
+            activeStatus = 'SERVING';
+            updateUI();
+        }
+
+        function markCarServed() {
+            if (!activeOrder || activeStatus !== 'SERVING') return;
+            activeStatus = 'SERVED';
+            totalServedCount++;
+            
+            completedHistory.unshift({
+                ...activeOrder,
+                completedTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+            });
+
+            updateUI();
+        }
+
+        function clearQueue() {
+            queue = [];
+            activeOrder = null;
+            activeStatus = null;
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('statQueueSize').textContent = queue.length;
+            document.getElementById('statTotalServed').textContent = totalServedCount;
+
+            const serveBtn = document.getElementById('serveBtn');
+            const finishBtn = document.getElementById('finishBtn');
+
+            serveBtn.disabled = queue.length === 0 || activeStatus === 'SERVING';
+            finishBtn.disabled = activeStatus !== 'SERVING';
+
+            const windowDisplay = document.getElementById('activeWindowDisplay');
+            const windowBadge = document.getElementById('windowStatusBadge');
+
+            if (activeOrder && activeStatus === 'SERVING') {
+                windowBadge.textContent = "Serving in Progress";
+                windowBadge.className = "bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full font-medium border border-amber-300";
+                windowDisplay.className = "bg-amber-50/50 border border-amber-300 rounded-xl p-5 transition-all duration-300";
+                windowDisplay.innerHTML = `
+                    <div class="flex justify-between w-full items-center">
+                        <div class="text-left">
+                            <span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-mono">${activeOrder.id}</span>
+                            <h4 class="text-base font-bold text-slate-900 mt-1">${activeOrder.customer}</h4>
+                            <p class="text-xs text-slate-500">${activeOrder.items}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="inline-block animate-pulse bg-amber-500 text-white text-xs px-3 py-1.5 rounded-full font-bold shadow-sm">
+                                <i class="fa-solid fa-spinner animate-spin mr-1"></i> Serving Now...
+                            </span>
+                        </div>
+                    </div>
+                `;
+            } else if (activeOrder && activeStatus === 'SERVED') {
+                windowBadge.textContent = "Customer Finished";
+                windowBadge.className = "bg-emerald-100 text-emerald-800 text-xs px-3 py-1 rounded-full font-medium border border-emerald-300";
+                windowDisplay.className = "bg-emerald-50/50 border border-emerald-300 rounded-xl p-5 transition-all duration-300";
+                windowDisplay.innerHTML = `
+                    <div class="flex justify-between w-full items-center">
+                        <div class="text-left">
+                            <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-mono">${activeOrder.id}</span>
+                            <h4 class="text-base font-bold text-slate-900 mt-1">${activeOrder.customer}</h4>
+                            <p class="text-xs text-slate-500">${activeOrder.items}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="inline-block bg-emerald-600 text-white text-xs px-3 py-1.5 rounded-full font-bold shadow-sm">
+                                <i class="fa-solid fa-circle-check mr-1"></i> Order Served (Driver Departed)
+                            </span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                windowBadge.textContent = "Window Idle";
+                windowBadge.className = "bg-slate-200 text-slate-700 text-xs px-3 py-1 rounded-full font-medium";
+                windowDisplay.className = "bg-slate-50 border border-slate-200 rounded-xl p-5 text-center min-h-[110px] flex flex-col items-center justify-center transition-all duration-300";
+                windowDisplay.innerHTML = `<p class="text-slate-500 text-sm">No car at the pickup window. Click "Call Next Car" to pull from queue.</p>`;
+            }
+
+            // Completed History Render with Receipt Actions
+            const historyContainer = document.getElementById('historyListContainer');
+            if (completedHistory.length === 0) {
+                historyContainer.innerHTML = `<p class="text-center py-6 text-slate-400 italic">No completed orders yet.</p>`;
+            } else {
+                let historyHtml = '';
+                completedHistory.forEach((item, idx) => {
+                    historyHtml += `
+                        <div class="bg-white border border-slate-200 p-2.5 rounded-lg flex justify-between items-center shadow-xs">
+                            <div>
+                                <span class="font-bold text-slate-800">${item.customer}</span>
+                                <span class="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded ml-1 font-mono">${item.id}</span>
+                                <p class="text-slate-500">${item.items}</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-[10px] text-emerald-600 font-medium bg-emerald-50 px-2 py-1 rounded">Served</span>
+                                <button onclick="showReceipt(${idx})" class="bg-slate-100 hover:bg-teal-50 text-slate-600 hover:text-teal-700 p-1.5 rounded-lg transition border border-slate-200" title="View Receipt">
+                                    <i class="fa-solid fa-receipt text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                historyContainer.innerHTML = historyHtml;
+            }
+
+            // Queue List Render with Estimated Wait Times
+            const queueContainer = document.getElementById('queueListContainer');
+            if (queue.length === 0) {
+                queueContainer.innerHTML = `
+                    <div class="text-center py-12 text-slate-400 text-sm">
+                        <i class="fa-solid fa-car text-3xl mb-2 opacity-30 block"></i>
+                        The drive-thru queue is currently empty. Add an order to begin.
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            queue.forEach((order, index) => {
+                const badgeColor = index === 0 ? 'bg-teal-600 text-white font-bold' : 'bg-slate-200 text-slate-600';
+                const label = index === 0 ? 'Next in Line' : `#${index + 1} in Line`;
+                const estimatedMinutes = (index + 1) * 2;
+                
+                html += `
+                    <div class="bg-white border border-slate-200 rounded-xl p-3.5 flex justify-between items-center shadow-xs transition hover:border-teal-300">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-8 h-8 rounded-lg flex items-center justify-center text-xs ${badgeColor}">${index + 1}</span>
+                            <div>
+                                <div class="flex items-center space-x-2">
+                                    <h5 class="text-sm font-semibold text-slate-800">${order.customer}</h5>
+                                    <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono">${order.id}</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-0.5">${order.items}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs text-slate-700 font-bold block">${label}</span>
+                            <span class="text-[10px] bg-teal-50 text-teal-700 px-2 py-0.5 rounded font-medium mt-1 inline-block border border-teal-200">
+                                <i class="fa-regular fa-clock mr-1"></i> ~${estimatedMinutes} mins wait
+                            </span>
+                        </div>
+                    </div>
+                `;
+            });
+            queueContainer.innerHTML = html;
+        }
+
+        function toggleInfoModal() {
+            const modal = document.getElementById('infoModal');
+            modal.classList.toggle('hidden');
+            modal.classList.toggle('flex');
+        }
+
+        function showReceipt(index) {
+            const item = completedHistory[index];
+            const receiptContent = document.getElementById('receiptContent');
+            receiptContent.innerHTML = `
+                <div class="flex justify-between"><span>Order ID:</span> <strong class="font-mono">${item.id}</strong></div>
+                <div class="flex justify-between"><span>Customer:</span> <strong>${item.customer}</strong></div>
+                <div class="flex justify-between"><span>Time Placed:</span> <span>${item.time}</span></div>
+                <div class="flex justify-between"><span>Time Served:</span> <span>${item.completedTime}</span></div>
+                <div class="border-t border-slate-200 my-2 pt-2">
+                    <p class="font-semibold text-slate-700 mb-1">Purchased Items:</p>
+                    <p class="bg-slate-50 p-2 rounded border border-slate-200">${item.items}</p>
+                </div>
+                <div class="text-center text-[10px] text-slate-400 pt-2 italic">Thank you for choosing Drive-Thru Express!</div>
+            `;
+            toggleReceiptModal();
+        }
+
+        function toggleReceiptModal() {
+            const modal = document.getElementById('receiptModal');
+            modal.classList.toggle('hidden');
+            modal.classList.toggle('flex');
+        }
+    </script>
+</body>
+</html>
